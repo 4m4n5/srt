@@ -2,6 +2,7 @@
 data:
   dataset: nmr
   num_points: 8192
+  path: /scratch/as3ek/github/srt/data/nmr
 model:
   encoder_kwargs:
     pos_start_octave: -5
