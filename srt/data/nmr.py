@@ -63,6 +63,7 @@ class NMRDataset(Dataset):
         return self.num_scenes * 24
 
     def __getitem__(self, idx):
+        import pdb; pdb.set_trace()
         scene_idx = idx % self.num_scenes
         view_idx = idx // self.num_scenes
         target_views = np.array(list(set(range(24)) - set([view_idx])))
