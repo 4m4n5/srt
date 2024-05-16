@@ -1,7 +1,6 @@
 *.pt
 .ipynb_checkpoints
 data/
-runs
 *__pycache__
 
 !srt/data
