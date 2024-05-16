@@ -27,16 +27,20 @@ class AirplaneDataset(Dataset):
         import pdb; pdb.set_trace()
         idx1, idx2 = np.random.randint(100), np.random.randint(100)
         folder = os.path.join(self.path,'img/')+self.objects[idx]+'/'
+        
         img1, img2 = np.load(folder+'lores'+str(idx1)+'.npy'), np.load(folder+'lores'+str(idx2)+'.npy')
         img1, img2 = img1.astype(np.float32).transpose(2,0,1)/255, img2.astype(np.float32).transpose(2,0,1)/255
+        
         p1, p2 = np.load(folder+'pos'+str(idx1)+'.npy'), np.load(folder+'pos'+str(idx2)+'.npy')
         R1, R2 = np.load(folder+'ray'+str(idx1)+'.npy'), np.load(folder+'ray'+str(idx2)+'.npy')
+        
         img1 = np.expand_dims(img1,0)
-        p1 = np.expand_dims(p1,0)
-        R1 = np.expand_dims(R1,0)
+        p1 = np.expand_dims(p1,0).astype(np.float32)
+        R1 = np.expand_dims(R1,0).astype(np.float32)
+        
         img2 = img2.transpose((1,2,0)).reshape(-1,3)
-        p2 = np.expand_dims(p2,0).repeat(64*64,0)
-        R2 = R2.reshape(-1,3)
+        p2 = np.expand_dims(p2,0).repeat(64*64,0).astype(np.float32)
+        R2 = R2.reshape(-1,3).astype(np.float32)
 
         result = {
             'input_images': img1,
