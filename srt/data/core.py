@@ -40,7 +40,7 @@ def get_dataset(mode, cfg, max_len=None, full_scale=False):
         dataset = data.Clevr3dDataset(dataset_folder, mode, points_per_item=points_per_item,
                                       shapenet=True, max_len=max_len, full_scale=full_scale, **kwargs)
     elif dataset_type == 'plane':
-        dataset = AirplaneDataset(path=dataset_folder, split=mode)
+        dataset = data.AirplaneDataset(path=dataset_folder, split=mode)
     else:
         raise ValueError('Invalid dataset "{}"'.format(cfg['dataset']))
 
