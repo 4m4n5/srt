@@ -128,6 +128,8 @@ class NMRDataset(Dataset):
             pixels_sel = pixels_flat
             cpos_sel = cpos_flat
 
+        import pdb; pdb.set_trace()
+
         result = {
             'input_images':      np.expand_dims(input_image, 0),              # [1, 3, h, w]
             'input_camera_pos':  np.expand_dims(camera_pos[view_idx], 0),     # [1, 3]
