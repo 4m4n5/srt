@@ -6,6 +6,11 @@ from torch.utils.data import Dataset
 class AirplaneDataset(Dataset):
     def __init__(self, path, split='train'):
         self.path = path
+
+        self.render_kwargs = {
+            'min_dist': 2.,
+            'max_dist': 4.}
+
         if split=='train':
             objects = np.load(os.path.join(path,'train_lst.npy'))
             self.objects = objects[:int(len(objects)/8*7)]
