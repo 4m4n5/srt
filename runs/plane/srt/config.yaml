@@ -2,6 +2,7 @@
 data:
   dataset: plane
   path: /scratch/as3ek/github/srt/data/plane
+  num_points: 4096
 model:
   encoder_kwargs:
     pos_start_octave: -5
