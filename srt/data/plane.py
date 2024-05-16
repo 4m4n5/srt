@@ -24,6 +24,7 @@ class AirplaneDataset(Dataset):
         return len(self.objects)
     
     def __getitem__(self, idx):
+        import pdb; pdb.set_trace()
         idx1, idx2 = np.random.randint(100), np.random.randint(100)
         folder = os.path.join(self.path,'img/')+self.objects[idx]+'/'
         img1, img2 = np.load(folder+'lores'+str(idx1)+'.npy'), np.load(folder+'lores'+str(idx2)+'.npy')
