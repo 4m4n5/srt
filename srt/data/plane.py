@@ -31,4 +31,15 @@ class AirplaneDataset(Dataset):
         img2 = img2.transpose((1,2,0)).reshape(-1,3)
         p2 = np.expand_dims(p2,0).repeat(64*64,0)
         R2 = R2.reshape(-1,3)
-        return img1, p1, R1, img2, p2, R2, idx
+
+        result = {
+            'input_images': img1,
+            'input_camera_pos': p1,
+            'input_rays': R1,
+            'target_pixels': img2,
+            'target_camera_pos': p2,
+            'target_rays': R2,
+            'sceneid': idx,
+        }
+
+        return result
