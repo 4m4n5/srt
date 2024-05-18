@@ -157,8 +157,9 @@ if __name__ == '__main__':
 
     # Try to automatically resume
     try:
-        if os.path.exists(os.path.join(out_dir, f'model_{max_it}.pt')):
-            load_dict = checkpoint.load(f'model_{max_it}.pt')
+        if os.path.exists(os.path.join(out_dir, f'model_best.pt')):
+            load_dict = checkpoint.load(f'model_best.pt')
+            print("loding best model")
         else:
             load_dict = checkpoint.load('model.pt')
     except FileNotFoundError:
