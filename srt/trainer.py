@@ -83,6 +83,8 @@ class SRTTrainer:
 
         pred_pixels, extras = self.model.decoder(z, target_camera_pos, target_rays, **self.render_kwargs)
 
+        import pdb; pdb.set_trace()
+
         loss = loss + ((pred_pixels - target_pixels)**2).mean((1, 2))
         loss_terms['mse'] = loss
         if 'coarse_img' in extras:
