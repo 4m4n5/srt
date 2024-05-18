@@ -161,7 +161,8 @@ if __name__ == '__main__':
             load_dict = checkpoint.load(f'model_best.pt')
             print("loding best model")
         else:
-            load_dict = checkpoint.load('model.pt')
+            load_dict = checkpoint.load('model_best.pt')
+            print("loding best model 2")
     except FileNotFoundError:
         load_dict = dict()
 
