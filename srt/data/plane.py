@@ -34,6 +34,11 @@ class AirplaneDataset(Dataset):
         p1, p2 = np.load(folder+'pos'+str(idx1)+'.npy'), np.load(folder+'pos'+str(idx2)+'.npy')
         R1, R2 = np.load(folder+'ray'+str(idx1)+'.npy'), np.load(folder+'ray'+str(idx2)+'.npy')
         
+        p1 = p1/np.linalg.norm(p1)
+        p1 *= 2.366
+        p2 = p2/np.linalg.norm(p2)
+        p2 *= 2.366
+        
         img1 = np.expand_dims(img1,0)
         p1 = np.expand_dims(p1,0).astype(np.float32)
         R1 = np.expand_dims(R1,0).astype(np.float32)
