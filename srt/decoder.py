@@ -39,7 +39,7 @@ class RayPredictor(nn.Module):
             x: query camera positions [batch_size, num_rays, 3]
             rays: query ray directions [batch_size, num_rays, 3]
         """
-        queries = self.query_encoder(x, rays)
+        queries = self.query_encoder(x, rays).reshape(-1,180,64*64).permute(0,2,1)
         if self.input_mlp is not None:
             queries = self.input_mlp(queries)
 
