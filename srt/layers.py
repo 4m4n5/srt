@@ -13,7 +13,7 @@ class RayEncoder(nn.Module):
         self.linear = nn.Linear(9,100)#linear embedding of SO(3) matrix
         height_encoding = self._get_encoding(64, 80//2).repeat(1, 64, 1)
         width_encoding = self._get_encoding(64, 80//2).permute(1,0,2).repeat(64, 1, 1)
-        self.pos_encoding = torch.cat([height_encoding, width_encoding],2).permute(2,0,1)
+        self.pos_encoding = torch.cat([height_encoding, width_encoding],2).permute(2,0,1).cuda()
     
     def _get_encoding(self, size, d_model):
         encoding = torch.zeros(size, d_model)
