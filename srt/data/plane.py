@@ -32,7 +32,7 @@ class AirplaneDataset(Dataset):
         img1, img2 = np.load(folder+'lores'+str(idx1)+'.npy'), np.load(folder+'lores'+str(idx2)+'.npy')
         img1, img2 = img1.astype(np.float32).transpose(2,0,1)/255, img2.astype(np.float32).transpose(2,0,1)/255
         R1, R2 = np.load(folder+str(idx1)+'.npy'), np.load(folder+str(idx2)+'.npy')
-        R1, R2 = R1.reshape(-1), R2.reshape(-1)
+        R1, R2 = R1.reshape(-1).astype(np.float32), R2.reshape(-1).astype(np.float32)
         
         img1 = np.expand_dims(img1,0)
         
