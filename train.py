@@ -233,11 +233,11 @@ if __name__ == '__main__':
                     checkpoint.save('model_%d.pt' % it, **checkpoint_scalars)
                     print('Backup checkpoint saved.')
 
-                # Visualize output
-                if args.visnow or (it > 0 and visualize_every > 0 and (it % visualize_every) == 0):
-                    print('Visualizing...')
-                    trainer.visualize(data_vis_val, mode='val')
-                    trainer.visualize(data_vis_train, mode='train')
+                # # Visualize output
+                # if args.visnow or (it > 0 and visualize_every > 0 and (it % visualize_every) == 0):
+                #     print('Visualizing...')
+                #     trainer.visualize(data_vis_val, mode='val')
+                #     trainer.visualize(data_vis_train, mode='train')
 
             # Run evaluation
             if args.evalnow or (it > 0 and validate_every > 0 and (it % validate_every) == 0):
