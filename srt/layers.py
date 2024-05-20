@@ -5,7 +5,34 @@ import numpy as np
 import math
 from einops import rearrange
 
+class RayEncoder(nn.Module):
+    
+    def __init__(self, pos_octaves=8, pos_start_octave=0, ray_octaves=4, ray_start_octave=0):
+        #num_octaves & start_octave: ignored
+        super().__init__()
+        self.linear = nn.Linear(9,100)#linear embedding of SO(3) matrix
+        height_encoding = self._get_encoding(64, 80//2).repeat(1, 64, 1)
+        width_encoding = self._get_encoding(64, 80//2).permute(1,0,2).repeat(64, 1, 1)
+        self.pos_encoding = torch.cat([height_encoding, width_encoding],2).permute(2,0,1)
+    
+    def _get_encoding(self, size, d_model):
+        encoding = torch.zeros(size, d_model)
+        pos = torch.arange(0, size, dtype=torch.float).unsqueeze(1)
+        div_term = torch.exp(torch.arange(0, d_model, 2).float() * (-torch.log(torch.tensor(10000.0)) / d_model))
+        encoding[:, 0::2] = torch.sin(pos * div_term)
+        encoding[:, 1::2] = torch.cos(pos * div_term)
+        encoding = encoding.unsqueeze(0).transpose(0, 1)
+        return encoding
+    
+    def forward(self, pos, rays):
+        #pos: ignored
+        #rays: SO(3) matrix here, (batch_size, 9)
+        rays_e = rays.unsqueeze(1).unsqueeze(2).repeat(1,64,64,1)
+        h = self.linear(rays_e).permute(0,3,1,2)
+        h2 = self.pos_encoding.unsqueeze(0).repeat(rays.shape[0],1,1,1)
+        return torch.cat([h,h2],1)
 
+'''
 class PositionalEncoding(nn.Module):
     def __init__(self, num_octaves=8, start_octave=0):
         super().__init__()
@@ -56,6 +83,7 @@ class RayEncoder(nn.Module):
             x = torch.cat((pos_enc, ray_enc), -1)
 
         return x
+'''
 
 
 # Transformer implementation based on ViT
@@ -140,4 +168,3 @@ class Transformer(nn.Module):
             x = attn(x, z=z) + x
             x = ff(x) + x
         return x
-

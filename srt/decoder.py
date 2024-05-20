@@ -2,7 +2,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 
-from srt.layers import RayEncoder, Transformer, PositionalEncoding
+from srt.layers import RayEncoder, Transformer#, PositionalEncoding
 from srt.utils import nerf
 
 
@@ -229,5 +229,3 @@ def render_nerf(model, z, camera_pos, rays, num_coarse_samples=128,
     extras['coarse_depth'] = coarse_depth
 
     return rgba_composite_white(fine_img), extras
-
-

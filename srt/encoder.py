@@ -151,5 +151,3 @@ class ImprovedSRTEncoder(nn.Module):
         x = self.transformer(x)
 
         return x
-
-

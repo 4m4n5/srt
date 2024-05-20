@@ -31,25 +31,20 @@ class AirplaneDataset(Dataset):
         
         img1, img2 = np.load(folder+'lores'+str(idx1)+'.npy'), np.load(folder+'lores'+str(idx2)+'.npy')
         img1, img2 = img1.astype(np.float32).transpose(2,0,1)/255, img2.astype(np.float32).transpose(2,0,1)/255
-        
-        p1, p2 = np.load(ray_folder+'pos'+str(idx1)+'.npy'), np.load(ray_folder+'pos'+str(idx2)+'.npy')
-        R1, R2 = np.load(ray_folder+'ray'+str(idx1)+'.npy'), np.load(ray_folder+'ray'+str(idx2)+'.npy')
+        R1, R2 = np.load(folder+str(idx1)+'.npy'), np.load(folder+str(idx2)+'.npy')
+        R1, R2 = R1.reshape(-1), R2.reshape(-1)
         
         img1 = np.expand_dims(img1,0)
-        p1 = np.expand_dims(p1,0).astype(np.float32)
-        R1 = np.expand_dims(R1,0).astype(np.float32)
         
         img2 = img2.transpose((1,2,0)).reshape(-1,3)
-        p2 = np.expand_dims(p2,0).repeat(64*64,0).astype(np.float32)
-        R2 = R2.reshape(-1,3).astype(np.float32)
 
         result = {
             'input_images': img1,
-            'input_camera_pos': p1,
-            'input_rays': R1,
+            'input_camera_pos': None,
+            'input_rays': R1,              #Now, just (9,)
             'target_pixels': img2,
-            'target_camera_pos': p2,
-            'target_rays': R2,
+            'target_camera_pos': None,
+            'target_rays': R2,             #Now, just (9,)
             'sceneid': idx,
         }
 
