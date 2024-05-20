@@ -66,7 +66,7 @@ class SRTTrainer:
         return loss.item(), loss_terms
 
     def compute_loss(self, data, it):
-        import ipdb; ipdb.set_trace()
+        # import ipdb; ipdb.set_trace()
         device = self.device
 
         input_images = data.get('input_images').to(device)
