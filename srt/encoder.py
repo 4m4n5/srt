@@ -136,7 +136,7 @@ class ImprovedSRTEncoder(nn.Module):
         batch_size, num_images = images.shape[:2]
 
         x = images.flatten(0, 1)
-        camera_pos = camera_pos.flatten(0, 1)
+        camera_pos = camera_pos
         rays = rays.flatten(0, 1)
 
         ray_enc = self.ray_encoder(camera_pos, rays)
