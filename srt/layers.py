@@ -25,6 +25,7 @@ class RayEncoder(nn.Module):
         return encoding
     
     def forward(self, pos, rays):
+        import ipdb; ipdb.set_trace()
         #pos: ignored
         #rays: SO(3) matrix here, (batch_size, 9)
         rays_e = rays.unsqueeze(1).unsqueeze(2).repeat(1,64,64,1)
