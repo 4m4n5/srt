@@ -40,10 +40,10 @@ class AirplaneDataset(Dataset):
 
         result = {
             'input_images': img1,
-            'input_camera_pos': None,
+            'input_camera_pos': 0,
             'input_rays': R1,              #Now, just (9,)
             'target_pixels': img2,
-            'target_camera_pos': None,
+            'target_camera_pos': 0,
             'target_rays': R2,             #Now, just (9,)
             'sceneid': idx,
         }
