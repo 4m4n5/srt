@@ -41,10 +41,10 @@ class AirplaneDataset(Dataset):
         result = {
             'input_images': img1,
             'input_camera_pos': 0,
-            'input_rays': R1,              #Now, just (9,)
+            'input_rays': np.expand_dims(R1, 0),              #Now, just (9,)
             'target_pixels': img2,
             'target_camera_pos': 0,
-            'target_rays': R2,             #Now, just (9,)
+            'target_rays': np.expand_dims(R2, 0),             #Now, just (9,)
             'sceneid': idx,
         }
 
