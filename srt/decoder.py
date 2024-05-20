@@ -59,6 +59,7 @@ class SRTDecoder(nn.Module):
                                           input_mlp=False, output_mlp=True)
 
     def forward(self, z, x, rays, **kwargs):
+        rays = rays.flatten(0, 1)
         output = self.ray_predictor(z, x, rays)
         return torch.sigmoid(output), dict()
 
