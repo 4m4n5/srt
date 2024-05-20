@@ -27,17 +27,13 @@ class AirplaneDataset(Dataset):
         # import pdb; pdb.set_trace()
         idx1, idx2 = np.random.randint(100), np.random.randint(100)
         folder = os.path.join(self.path,'img/')+self.objects[idx]+'/'
+        ray_folder = os.path.join(self.path,'rays/')+self.objects[idx]+'/'
         
         img1, img2 = np.load(folder+'lores'+str(idx1)+'.npy'), np.load(folder+'lores'+str(idx2)+'.npy')
         img1, img2 = img1.astype(np.float32).transpose(2,0,1)/255, img2.astype(np.float32).transpose(2,0,1)/255
         
-        p1, p2 = np.load(folder+'pos'+str(idx1)+'.npy'), np.load(folder+'pos'+str(idx2)+'.npy')
-        R1, R2 = np.load(folder+'ray'+str(idx1)+'.npy'), np.load(folder+'ray'+str(idx2)+'.npy')
-        
-        p1 = p1/np.linalg.norm(p1)
-        p1 *= 2.366
-        p2 = p2/np.linalg.norm(p2)
-        p2 *= 2.366
+        p1, p2 = np.load(ray_folder+'pos'+str(idx1)+'.npy'), np.load(ray_folder+'pos'+str(idx2)+'.npy')
+        R1, R2 = np.load(ray_folder+'ray'+str(idx1)+'.npy'), np.load(ray_folder+'ray'+str(idx2)+'.npy')
         
         img1 = np.expand_dims(img1,0)
         p1 = np.expand_dims(p1,0).astype(np.float32)
