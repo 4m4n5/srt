@@ -71,7 +71,7 @@ class SRTTrainer:
         return loss.item(), loss_terms
 
     def save_image(self, pixels, path="/scratch/as3ek/github/yinzhu/", name="test.png"):
-        images = pixels.view(pixels.size(0), 32, 32, 3)
+        images = pixels.view(pixels.size(0), 64, 64, 3)
         # Assuming images is your tensor of size torch.Size([32, 64, 64, 3])
         # Convert the tensor to the format expected by make_grid (C x H x W)
         images = images.permute(0, 3, 1, 2)  # Convert to (32, 3, 64, 64)
