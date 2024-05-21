@@ -24,7 +24,7 @@ class SRTTrainer:
         self.out_dir = out_dir
         self.render_kwargs = render_kwargs
         # Initialize LPIPS model
-        self.lpips_model = lpips.LPIPS(net='vgg')
+        self.lpips_model = lpips.LPIPS(net='vgg').cuda()
         if 'num_coarse_samples' in cfg['training']:
             self.render_kwargs['num_coarse_samples'] = cfg['training']['num_coarse_samples']
         if 'num_fine_samples' in cfg['training']:
