@@ -10,7 +10,10 @@ from srt.utils.common import get_rank, get_world_size
 import os
 import math
 from collections import defaultdict
-
+import torchvision.utils as vutils
+from PIL import Image
+from torchmetrics.functional import structural_similarity_index_measure as ssim
+import lpips
 
 class SRTTrainer:
     def __init__(self, model, optimizer, cfg, device, out_dir, render_kwargs):
@@ -20,6 +23,8 @@ class SRTTrainer:
         self.device = device
         self.out_dir = out_dir
         self.render_kwargs = render_kwargs
+        # Initialize LPIPS model
+        self.lpips_model = lpips.LPIPS(net='vgg')
         if 'num_coarse_samples' in cfg['training']:
             self.render_kwargs['num_coarse_samples'] = cfg['training']['num_coarse_samples']
         if 'num_fine_samples' in cfg['training']:
@@ -65,6 +70,54 @@ class SRTTrainer:
         self.optimizer.step()
         return loss.item(), loss_terms
 
+    def save_image(self, pixels, path="/scratch/as3ek/github/yinzhu/", name="test.png"):
+        images = pixels.view(pixels.size(0), 32, 32, 3)
+        # Assuming images is your tensor of size torch.Size([32, 64, 64, 3])
+        # Convert the tensor to the format expected by make_grid (C x H x W)
+        images = images.permute(0, 3, 1, 2)  # Convert to (32, 3, 64, 64)
+        # Create a grid of images
+        grid = vutils.make_grid(images, nrow=8)  # Arrange images into an 8x4 grid
+        # Convert the grid to a numpy array
+        ndarr = grid.mul(255).byte().permute(1, 2, 0).cpu().numpy()
+        # Create a PIL image
+        im = Image.fromarray(ndarr)
+        # Save the image as a PNG file
+        im.save(os.path.join(path, name))
+
+    def calculate_ssim_lpips(self, batch1, batch2):
+        """
+        Calculate the SSIM between two batches of images.
+
+        Args:
+        batch1 (torch.Tensor): First batch of images with shape [B, H, W, C].
+        batch2 (torch.Tensor): Second batch of images with shape [B, H, W, C].
+
+        Returns:
+        torch.Tensor: Tensor containing SSIM values for each pair of images in the batches.
+        """
+        # Ensure the input batches are in the shape [B, H, W, C]
+        if batch1.shape != batch2.shape:
+            raise ValueError("Input batches must have the same shape")
+        
+        batch1 = batch1.view(-1, 64, 64, 3)
+        batch2 = batch2.view(-1, 64, 64, 3)
+
+        # Permute the batches to match the expected format (B, C, H, W)
+        batch1 = batch1.permute(0, 3, 1, 2)
+        batch2 = batch2.permute(0, 3, 1, 2)
+
+        # Calculate SSIM for each pair of images in the batches
+        ssim_values = [ssim(img1.unsqueeze(0), img2.unsqueeze(0)) for img1, img2 in zip(batch1, batch2)]
+
+        # Convert the list of SSIM values to a tensor
+        ssim_values = torch.tensor(ssim_values)
+
+        # Calculate LPIPS for each pair of images in the batches
+        lpips_values = [self.lpips_model(img1.unsqueeze(0), img2.unsqueeze(0)).item() for img1, img2 in zip(batch1, batch2)]
+        lpips_values = torch.tensor(lpips_values)
+
+        return ssim_values, lpips_values
+
     def compute_loss(self, data, it):
         import ipdb; ipdb.set_trace()
         device = self.device
@@ -85,7 +138,15 @@ class SRTTrainer:
         pred_pixels, extras = self.model.decoder(z, target_camera_pos, target_rays, **self.render_kwargs)
 
         loss = loss + ((pred_pixels - target_pixels)**2).mean((1, 2))
+
         loss_terms['mse'] = loss
+
+        rand = np.random.randint(1, 10001)
+        self.save_image(pixels=pred_pixels, name=f"pred{rand}.png")
+        self.save_image(pixels=target_pixels, name=f"target{rand}.png")
+
+        loss_terms['ssim'], loss_terms['lpips'] = self.calculate_ssim_lpips(pred_pixels, target_pixels)
+
         if 'coarse_img' in extras:
             coarse_loss = ((extras['coarse_img'] - target_pixels)**2).mean((1, 2))
             loss_terms['coarse_mse'] = coarse_loss
