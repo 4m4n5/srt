@@ -66,7 +66,7 @@ class SRTTrainer:
         return loss.item(), loss_terms
 
     def compute_loss(self, data, it):
-        # import ipdb; ipdb.set_trace()
+        import ipdb; ipdb.set_trace()
         device = self.device
 
         input_images = data.get('input_images').to(device)
@@ -95,7 +95,7 @@ class SRTTrainer:
 
     def eval_step(self, data, full_scale=False):
         with torch.no_grad():
-            loss, loss_terms = self.compute_loss(data, 1000000)
+            loss, loss_terms = self.compute_loss(data, -1)
 
         mse = loss_terms['mse']
         psnr = mse2psnr(mse)
