@@ -146,10 +146,10 @@ class SRTTrainer:
         # self.save_image(pixels=pred_pixels, name=f"pred{rand}.png")
         # self.save_image(pixels=target_pixels, name=f"target{rand}.png")
 
-        pred_images = pred_pixels.view(pixels.size(0), 64, 64, 3)
+        pred_images = pred_pixels.view(pred_pixels.size(0), 64, 64, 3)
         pred_images = pred_images.permute(0, 3, 1, 2)  # Convert to (32, 3, 64, 64)
 
-        target_images = target_pixels.view(pixels.size(0), 64, 64, 3)
+        target_images = target_pixels.view(target_pixels.size(0), 64, 64, 3)
         target_images = target_images.permute(0, 3, 1, 2)  # Convert to (32, 3, 64, 64)
 
         # Save the tensor to a .pt file
