@@ -120,7 +120,7 @@ class SRTTrainer:
         return ssim_values, lpips_values
 
     def compute_loss(self, data, it):
-        # import ipdb; ipdb.set_trace()
+        import ipdb; ipdb.set_trace()
         device = self.device
 
         input_images = data.get('input_images').to(device)
