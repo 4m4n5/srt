@@ -146,6 +146,8 @@ class SRTTrainer:
         # self.save_image(pixels=pred_pixels, name=f"pred{rand}.png")
         # self.save_image(pixels=target_pixels, name=f"target{rand}.png")
 
+        input_images_save = input_images.squeeze(1)
+
         pred_images = pred_pixels.view(pred_pixels.size(0), 64, 64, 3)
         pred_images = pred_images.permute(0, 3, 1, 2)  # Convert to (32, 3, 64, 64)
 
@@ -155,6 +157,7 @@ class SRTTrainer:
         # Save the tensor to a .pt file
         torch.save(pred_images, f"/scratch/as3ek/github/yinzhu/srt_plane_samples/pred{it}.pt")
         torch.save(target_images, f"/scratch/as3ek/github/yinzhu/srt_plane_samples/target{it}.pt")
+        torch.save(input_images_save, f"/scratch/as3ek/github/yinzhu/srt_plane_samples/input{it}.pt")
 
         loss_terms['ssim'], loss_terms['lpips'] = self.calculate_ssim_lpips(pred_pixels, target_pixels)
 
