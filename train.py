@@ -111,7 +111,7 @@ if __name__ == '__main__':
         worker_init_fn=data.worker_init_fn, persistent_workers=True)
 
     val_loader = torch.utils.data.DataLoader(
-        eval_dataset, batch_size=max(1, batch_size // 8), num_workers=1, 
+        eval_dataset, batch_size=max(1, batch_size // 16), num_workers=1, 
         sampler=val_sampler, shuffle=False,
         pin_memory=False, worker_init_fn=data.worker_init_fn, persistent_workers=True)
 
