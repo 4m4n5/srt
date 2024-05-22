@@ -38,12 +38,13 @@ class SRTTrainer:
         self.model.eval()
         eval_lists = defaultdict(list)
 
-        loader = val_loader if get_rank() > 0 else tqdm(val_loader)
+        # loader = val_loader if get_rank() > 0 else tqdm(val_loader)
+        loader = val_loader
         sceneids = []
 
-        for data in loader:
+        for itr, data in tqdm(enumerate(loader)):
             sceneids.append(data['sceneid'])
-            eval_step_dict = self.eval_step(data, **kwargs)
+            eval_step_dict = self.eval_step(data, itr, **kwargs)
 
             for k, v in eval_step_dict.items():
                 eval_lists[k].append(v)
@@ -141,9 +142,19 @@ class SRTTrainer:
 
         loss_terms['mse'] = loss
 
-        rand = np.random.randint(1, 10001)
-        self.save_image(pixels=pred_pixels, name=f"pred{rand}.png")
-        self.save_image(pixels=target_pixels, name=f"target{rand}.png")
+        # rand = np.random.randint(1, 10001)
+        # self.save_image(pixels=pred_pixels, name=f"pred{rand}.png")
+        # self.save_image(pixels=target_pixels, name=f"target{rand}.png")
+
+        pred_images = pred_pixels.view(pixels.size(0), 64, 64, 3)
+        pred_images = pred_images.permute(0, 3, 1, 2)  # Convert to (32, 3, 64, 64)
+
+        target_images = target_pixels.view(pixels.size(0), 64, 64, 3)
+        target_images = target_images.permute(0, 3, 1, 2)  # Convert to (32, 3, 64, 64)
+
+        # Save the tensor to a .pt file
+        torch.save(pred_images, f"/scratch/as3ek/github/yinzhu/srt_plane_samples/pred{it}.pt")
+        torch.save(target_images, f"/scratch/as3ek/github/yinzhu/srt_plane_samples/target{it}.pt")
 
         loss_terms['ssim'], loss_terms['lpips'] = self.calculate_ssim_lpips(pred_pixels, target_pixels)
 
@@ -154,9 +165,9 @@ class SRTTrainer:
 
         return loss, loss_terms
 
-    def eval_step(self, data, full_scale=False):
+    def eval_step(self, data, itr, full_scale=False):
         with torch.no_grad():
-            loss, loss_terms = self.compute_loss(data, -1)
+            loss, loss_terms = self.compute_loss(data, itr)
 
         mse = loss_terms['mse']
         psnr = mse2psnr(mse)

@@ -99,11 +99,11 @@ if __name__ == '__main__':
     else:
         if world_size > 1:
             train_sampler = torch.utils.data.distributed.DistributedSampler(
-                train_dataset, shuffle=True, drop_last=False)
+                train_dataset, shuffle=False, drop_last=False)
             val_sampler = torch.utils.data.distributed.DistributedSampler(
-                eval_dataset, shuffle=True, drop_last=False)
+                eval_dataset, shuffle=False, drop_last=False)
         else:
-            shuffle = True
+            shuffle = False
 
     train_loader = torch.utils.data.DataLoader(
         train_dataset, batch_size=batch_size, num_workers=num_workers, pin_memory=True,
@@ -112,7 +112,7 @@ if __name__ == '__main__':
 
     val_loader = torch.utils.data.DataLoader(
         eval_dataset, batch_size=max(1, batch_size // 8), num_workers=1, 
-        sampler=val_sampler, shuffle=shuffle,
+        sampler=val_sampler, shuffle=False,
         pin_memory=False, worker_init_fn=data.worker_init_fn, persistent_workers=True)
 
     # Loaders for visualization scenes
